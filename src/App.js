@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
   let [like, likeChange] = useState(['0', '1', '2']);
   let [modal, setModal] = useState(false);
   let [idx, setIdx] = useState(0);
+  let [inputData, inputChange] = useState('');
   [1,2,3].map(function(param){
     return '123123'
   });
@@ -48,7 +49,7 @@ function App() {
     <p>2월 17일 발행</p>
     </div> */}
 
-    
+<Profile></Profile>
 
     {
     
@@ -75,9 +76,22 @@ function App() {
           </div>
           )
       })
-
+      
     }
-    
+    {/* 글입력 */}
+    <input  onChange={(e)=> {
+      let inputed = e.target.value;
+      inputChange(inputed);
+    }}/>
+
+    {/* 글발행 */}
+    <button onClick={()=>{
+      let copy = [...title];
+      copy.push(inputData);
+      category(copy);
+
+    }}>글 발행</button>
+
     {
      modal == true ? <Modal idx={idx} category={category} title={title}></Modal> : null
     }
@@ -86,6 +100,26 @@ function App() {
   );
 }
 
+class Profile extends React.Component{
+  constructor() {
+    super();
+    this.state = {  name : "kim", age : 27 }
+  }
+
+  changeName() {
+    this.setState({name:"kwon"})
+  }
+
+  render() {
+    return(
+      <div>
+       <h3>프로필입니다.</h3> 
+       <p>저는 {this.state.name} 입니다.</p>
+       <button onClick={()=> {this.changeName().bind(this)} }>이름바꿔</button>
+        </div>
+    )
+  }
+}
 
 const Modal = (props) => {
   return (
@@ -93,6 +127,11 @@ const Modal = (props) => {
       <h4>{props.title[props.idx]}</h4>
       <p>날짜{props.test}</p>
       <p>상세내용</p>
+      <button onClick={()=>{
+        let copy = [...props.title];
+        copy.splice([props.idx], 1);
+        props.category(copy);
+      }}>삭제</button>
       <button onClick={()=>{
         let copy = [...props.title];
         copy[0]='여자 코트 추천';
